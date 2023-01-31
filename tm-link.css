@@ -1,0 +1,4 @@
+/* Custom link modal */
+.tm-custom-link .acfe-modal-title .close {
+    display: none !important;
+}
