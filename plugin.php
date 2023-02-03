@@ -42,7 +42,7 @@ function tm_enqueue_custom_link_scripts()
 }
 
 if ( !function_exists( 'tm_get_custom_link' ) ) {
-	function tm_get_custom_link( $link )
+	function tm_get_custom_link( $link, $classes = '' )
 	{
 		$defaults = [
 			'type' => null,
@@ -59,25 +59,29 @@ if ( !function_exists( 'tm_get_custom_link' ) ) {
 		$link = wp_parse_args( $link, $defaults );
 
 		$label = $link['label'] ?: $link['name'] ?: $link['title'] ?: $link['url'];
+		$rel = !empty( $link['relationship'] ) ? 'rel="' . esc_attr( $link['relationship'] ) . '"' : '';
+		$target = !empty( $link['target'] ) ? 'target="' . esc_attr( $link['target'] ) . '"' : '';
+		$title = !empty( $link['title'] ) ? 'title="' . esc_attr( $link['title'] ) . '"' : '';
+		$classes = $classes ?: "class='{$classes}'}'";
 
-		return sprintf( '<a href="%s" title="%s" target="%s" rel="%s">%s</a>',
+		$attributes = trim( $rel . ' ' . $title . ' ' . $target . ' ' . $classes );
+
+		return sprintf( '<a href="%s" %s>%s</a>',
 			esc_url( $link['url'] ),
-			esc_attr( $link['title'] ),
-			esc_attr( $link['target'] ),
-			esc_attr( $link['relationship'] ),
+			$attributes,
 			esc_html( $label )
 		);
 	}
 }
 if ( !function_exists( 'tm_print_custom_link' ) ) {
-	function tm_print_custom_link( $link )
+	function tm_print_custom_link( $link, $classes = '' )
 	{
-		print tm_get_custom_link( $link );
+		print tm_get_custom_link( $link, $classes );
 	}
 }
 
 if ( !function_exists( 'tm_print_link_open' ) ) {
-	function tm_print_link_open( $link )
+	function tm_print_link_open( $link, $classes = null )
 	{
 		$defaults = [
 			'type' => null,
@@ -93,11 +97,16 @@ if ( !function_exists( 'tm_print_link_open' ) ) {
 
 		$link = wp_parse_args( $link, $defaults );
 
-		return sprintf( '<a href="%s" title="%s" target="%s" rel="%s">',
+		$rel = !empty( $link['relationship'] ) ? 'rel="' . esc_attr( $link['relationship'] ) . '"' : '';
+		$target = !empty( $link['target'] ) ? 'target="' . esc_attr( $link['target'] ) . '"' : '';
+		$title = !empty( $link['title'] ) ? 'title="' . esc_attr( $link['title'] ) . '"' : '';
+		$classes = $classes ?: "class='{$classes}'}'";
+
+		$attributes = trim( $rel . ' ' . $title . ' ' . $target . ' ' . $classes );
+
+		return sprintf( '<a href="%s" %s>',
 			esc_url( $link['url'] ),
-			esc_attr( $link['title'] ),
-			esc_attr( $link['target'] ),
-			esc_attr( $link['relationship'] ),
+			$attributes
 		);
 	}
 }
