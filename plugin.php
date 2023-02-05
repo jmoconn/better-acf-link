@@ -62,7 +62,7 @@ if ( !function_exists( 'tm_get_custom_link' ) ) {
 		$rel = !empty( $link['relationship'] ) ? 'rel="' . esc_attr( $link['relationship'] ) . '"' : '';
 		$target = !empty( $link['target'] ) ? 'target="' . esc_attr( $link['target'] ) . '"' : '';
 		$title = !empty( $link['title'] ) ? 'title="' . esc_attr( $link['title'] ) . '"' : '';
-		$classes = $classes ?: "class='{$classes}'}'";
+		$classes = !empty( $classes ) ? 'class="' . esc_attr( $classes ) . '"' : '';
 
 		$attributes = trim( $rel . ' ' . $title . ' ' . $target . ' ' . $classes );
 
@@ -100,7 +100,7 @@ if ( !function_exists( 'tm_print_link_open' ) ) {
 		$rel = !empty( $link['relationship'] ) ? 'rel="' . esc_attr( $link['relationship'] ) . '"' : '';
 		$target = !empty( $link['target'] ) ? 'target="' . esc_attr( $link['target'] ) . '"' : '';
 		$title = !empty( $link['title'] ) ? 'title="' . esc_attr( $link['title'] ) . '"' : '';
-		$classes = $classes ?: "class='{$classes}'}'";
+		$classes = !empty( $classes ) ? 'class="' . esc_attr( $classes ) . '"' : '';
 
 		$attributes = trim( $rel . ' ' . $title . ' ' . $target . ' ' . $classes );
 
