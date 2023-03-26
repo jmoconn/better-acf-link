@@ -58,6 +58,8 @@ if ( !function_exists( 'tm_get_custom_link' ) ) {
 
 		$link = wp_parse_args( $link, $defaults );
 
+		$link['url'] = $link['type'] === 'url' ? $link['value'] : $link['url'];
+
 		$label = $link['label'] ?: $link['name'] ?: $link['title'] ?: $link['url'];
 		$rel = !empty( $link['relationship'] ) ? 'rel="' . esc_attr( $link['relationship'] ) . '"' : '';
 		$target = !empty( $link['target'] ) ? 'target="' . esc_attr( $link['target'] ) . '"' : '';
