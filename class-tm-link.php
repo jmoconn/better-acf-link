@@ -403,7 +403,20 @@ if ( !class_exists( 'TmLink' ) ) {
 		 */
 		public function load_value( $value, $post_id, $field )
 		{
+			if ( empty( $value ) ) {
+				// For some reason when an external link is being used
+				// in a repeater within a flexible content field, the value is not being
+				// fetched properly for the flex preview. Internal links work fine.
+				// This fixes the issue for now, but need to dig into this more.
+				$store = acf_get_store( 'values' );
 
+				global $post;
+				$post_id = $post->ID;
+
+				if ( $store->has( "$post_id:{$field['name']}" ) ) {
+					return $store->get( "$post_id:{$field['name']}" );
+				}
+			}
 			// if value is string then set as value
 			if ( is_string( $value ) ) {
 				$value = array( 'value' => $value );
@@ -416,7 +429,8 @@ if ( !class_exists( 'TmLink' ) ) {
 				'type' => $link_type,
 				'value' => '',
 				'title' => '',
-				'target' => false
+				'target' => false,
+				'post_types' => array()
 			) );
 
 			// handle old args
@@ -464,7 +478,6 @@ if ( !class_exists( 'TmLink' ) ) {
 		 */
 		public function format_value( $value, $post_id, $field )
 		{
-
 			// if value is string then set as value
 			if ( is_string( $value ) ) {
 				$value = array( 'value' => $value );
@@ -472,12 +485,13 @@ if ( !class_exists( 'TmLink' ) ) {
 
 			// defaults
 			$value = wp_parse_args( $value, array(
-				'type' => 'url',
+				'type' => 'post',
 				'value' => '',
 				'url' => '',
 				'name' => '',
 				'title' => '',
-				'target' => ''
+				'target' => '',
+				'post_types' => array()
 			) );
 
 			if ( !empty( $value['value'] ) ) {
@@ -522,7 +536,6 @@ if ( !class_exists( 'TmLink' ) ) {
 		 */
 		public function validate_value( $valid, $value, $field, $input )
 		{
-
 			// bail early if not required
 			if ( !$field['required'] ) {
 				return $valid;
@@ -553,7 +566,6 @@ if ( !class_exists( 'TmLink' ) ) {
 		 */
 		public function update_value( $value, $post_id, $field )
 		{
-
 			// bail early
 			if ( empty( $value ) ) {
 				return $value;
@@ -570,7 +582,8 @@ if ( !class_exists( 'TmLink' ) ) {
 				'value' => '',
 				'url' => '',
 				'title' => '',
-				'target' => ''
+				'target' => '',
+				'post_types' => array()
 			) );
 
 			// loop over fields
@@ -608,7 +621,6 @@ if ( !class_exists( 'TmLink' ) ) {
 		 */
 		public function get_post_choices( $field )
 		{
-
 			// vars
 			$value = $field['value'];
 			$choices = array();
@@ -627,8 +639,8 @@ if ( !class_exists( 'TmLink' ) ) {
 				foreach ( array_keys( $posts ) as $i ) {
 
 					// append choice
-					$post = acf_extract_var( $posts, $i );
-					$choices[$post->ID] = $post_object->get_post_title( $post, $field );
+					$tm_post = acf_extract_var( $posts, $i );
+					$choices[$tm_post->ID] = $post_object->get_post_title( $tm_post, $field );
 
 				}
 
