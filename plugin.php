@@ -68,6 +68,10 @@ if ( !function_exists( 'tm_get_custom_link' ) ) {
 
 		$attributes = trim( $rel . ' ' . $title . ' ' . $target . ' ' . $classes );
 
+		if ( empty( $link['url'] ) ) {
+			return null;
+		}
+
 		return sprintf( '<a href="%s" %s>%s</a>',
 			esc_url( $link['url'] ),
 			$attributes,

@@ -154,7 +154,7 @@ if ( !class_exists( 'TmLink' ) ) {
 			// get value
 			$value = $field['value'];
 
-			$post_types = isset( $field['post_type'] ) && !empty( $field['post_type'] ) ? $field['post_type'] : apply_filters( 'tm-link-post-types', $this->get_post_types() );
+			$post_types = isset( $field['post_type'] ) && !empty( $field['post_type'] ) ? $field['post_type'] : apply_filters( 'tm_link_post_types', $this->get_post_types() );
 
 			// storage
 			$sub_fields = array();
@@ -411,7 +411,11 @@ if ( !class_exists( 'TmLink' ) ) {
 				$store = acf_get_store( 'values' );
 
 				global $post;
-				$post_id = $post->ID;
+				$post_id = $post->ID ?? null;
+
+				if ( empty( $post_id ) ) {
+					return $value;
+				}
 
 				if ( $store->has( "$post_id:{$field['name']}" ) ) {
 					return $store->get( "$post_id:{$field['name']}" );
@@ -686,8 +690,8 @@ if ( !class_exists( 'TmLink' ) ) {
 				's' => '',
 				'field_key' => '',
 				'paged' => 1,
-				'post_types' => apply_filters( 'tm-link-post-types', $this->get_post_types() ),
-				'post_status' => apply_filters( 'tm-link-post-status', ['publish', 'future'] )
+				'post_types' => apply_filters( 'tm_link_post_types', $this->get_post_types() ),
+				'post_status' => apply_filters( 'tm_link_post_status', ['publish', 'future'] )
 			) );
 
 			// post object
@@ -706,7 +710,7 @@ if ( !class_exists( 'TmLink' ) ) {
 
 			// paged
 			$args['posts_per_page'] = 20;
-			$args['paged'] = $options['paged'];
+			$args['paged'] = (int) $options['paged'] ?? 1;
 
 			// status
 			$args['post_status'] = acf_get_array( $options['post_status'] );
@@ -723,8 +727,8 @@ if ( !class_exists( 'TmLink' ) ) {
 
 			}
 
-			if ( !empty( $options['post_types'] ) ) {
-				$args['post_type'] = (array) $options['post_types'];
+			if ( isset( $options['post_types'] ) && !empty( $options['post_types'] ) ) {
+				$args['post_type'] = $options['post_types'];
 			} else if ( isset( $field['post_type'] ) && !empty( $field['post_type'] ) ) {
 				$args['post_type'] = acf_get_array( $field['post_type'] );
 			}
