@@ -690,7 +690,7 @@ if ( !class_exists( 'TmLink' ) ) {
 				's' => '',
 				'field_key' => '',
 				'paged' => 1,
-				'post_types' => apply_filters( 'tm_link_post_types', $this->get_post_types() ),
+				'post_types' => array_keys( apply_filters( 'tm_link_post_types', $this->get_post_types() ) ),
 				'post_status' => apply_filters( 'tm_link_post_status', ['publish', 'future'] )
 			) );
 
